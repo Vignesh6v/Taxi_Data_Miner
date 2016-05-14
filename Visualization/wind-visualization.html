@@ -3,7 +3,7 @@
 <style>
 
 body {
-  font: 10px sans-serif;
+  font: 15px sans-serif;
 }
 
 .axis path,
@@ -28,7 +28,7 @@ body {
 <script src="//d3js.org/d3.v3.min.js"></script>
 <script>
 
-var margin = {top: 20, right: 80, bottom: 30, left: 50},
+var margin = {top: 20, right: 80, bottom: 30, left: 100},
     width = 960 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 
@@ -61,23 +61,23 @@ var svg = d3.select("body").append("svg")
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-d3.csv("../Results/google_estimate_2015_25<>35.csv", function(error, data) {
+d3.csv("../Results/Trips_vs_Windspeed.csv", function(error, data) {
   if (error) throw error;
 
 temp = {};
-// console.log(data);
+console.log(data);
 data.forEach(function(d) {
-  if (temp.hasOwnProperty(d.distance)) {
-    temp[d.distance][d.gender] = d.difference;  
+  if (temp.hasOwnProperty(d.Wind_speed)) {
+    temp[d.Wind_speed][d.Year] = d.no_of_trips;  
   }
   else{
-    temp[d.distance] = {};
-    temp[d.distance][d.gender] = d.difference;  
+    temp[d.Wind_speed] = {};
+    temp[d.Wind_speed][d.Year] = d.no_of_trips;  
 
   }
   });
 
-// console.log(temp);
+console.log(temp);
 
 newData = []
 for (var key in temp) {
@@ -131,7 +131,7 @@ cities[1]['values'] = tempMValues;
 // console.log(fValues);
 // console.log(sortable);
 
-  x.domain([0,16]);
+  x.domain([0,25]);
 
 
   y.domain([
@@ -152,7 +152,7 @@ cities[1]['values'] = tempMValues;
       .attr("y", 6)
       .attr("dy", ".71em")
       .style("text-anchor", "end")
-      .text("Time Difference(Seconds)");
+      .text("No of trips");
 
   var city = svg.selectAll(".city")
       .data(cities)

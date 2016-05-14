@@ -3,7 +3,7 @@
 <style>
 
 body {
-  font: 10px sans-serif;
+  font: 15px sans-serif;
 }
 
 .axis path,
@@ -28,7 +28,7 @@ body {
 <script src="//d3js.org/d3.v3.min.js"></script>
 <script>
 
-var margin = {top: 20, right: 80, bottom: 30, left: 50},
+var margin = {top: 20, right: 80, bottom: 30, left: 70},
     width = 960 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 
@@ -61,24 +61,22 @@ var svg = d3.select("body").append("svg")
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-d3.csv("../Results/google_estimate_2015_25<>35.csv", function(error, data) {
+d3.csv("../Results/Trips_vs_Temperature.csv", function(error, data) {
   if (error) throw error;
 
 temp = {};
 // console.log(data);
 data.forEach(function(d) {
-  if (temp.hasOwnProperty(d.distance)) {
-    temp[d.distance][d.gender] = d.difference;  
+
+  if (temp.hasOwnProperty(d.Temp)) {
+    temp[d.Temp][d.year] = d.no_of_trips;  
   }
   else{
-    temp[d.distance] = {};
-    temp[d.distance][d.gender] = d.difference;  
+    temp[d.Temp] = {};
+    temp[d.Temp][d.year] = d.no_of_trips;  
 
   }
   });
-
-// console.log(temp);
-
 newData = []
 for (var key in temp) {
   if (temp.hasOwnProperty(key)) {
@@ -88,7 +86,8 @@ for (var key in temp) {
   }
 }
 console.log(newData);
-  color.domain(d3.keys(newData[0]).filter(function(key) { return key !== "date"; }));
+
+  color.domain(d3.keys(newData[1]).filter(function(key) { return key !== "date"; }));
 
   var cities = color.domain().map(function(name) {
     return {
@@ -98,6 +97,7 @@ console.log(newData);
     };
   });
 
+console.log(cities);
 var fValues = cities[0]['values'];
 var mValues = cities[1]['values'];
 
@@ -131,9 +131,10 @@ cities[1]['values'] = tempMValues;
 // console.log(fValues);
 // console.log(sortable);
 
-  x.domain([0,16]);
+  x.domain([0,100]);
 
-
+// console.log( d3.min(cities, function(c) { return d3.min(c.values, function(v) { return v.temperature; })}));
+// console.log( d3.max(cities, function(c) { return d3.min(c.values, function(v) { return v.temperature; })}));
   y.domain([
     d3.min(cities, function(c) { return d3.min(c.values, function(v) { return v.temperature; }); }),
     d3.max(cities, function(c) { return d3.max(c.values, function(v) { return v.temperature; }); })
@@ -152,7 +153,7 @@ cities[1]['values'] = tempMValues;
       .attr("y", 6)
       .attr("dy", ".71em")
       .style("text-anchor", "end")
-      .text("Time Difference(Seconds)");
+      .text("No of trips");
 
   var city = svg.selectAll(".city")
       .data(cities)
@@ -166,7 +167,7 @@ cities[1]['values'] = tempMValues;
 
   city.append("text")
       .datum(function(d) { return {name: d.name, value: d.values[d.values.length - 1]}; })
-      .attr("transform", function(d) { console.log(y(d.value.temperature)); return "translate(" + x(d.value.date) + "," + y(d.value.temperature) + ")"; })
+      .attr("transform", function(d) { return "translate(" + x(d.value.date) + "," + y(d.value.temperature) + ")"; })
       .attr("x", 3)
       .attr("dy", ".35em")
       .text(function(d) { return d.name; });
