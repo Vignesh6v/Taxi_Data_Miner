@@ -14,6 +14,7 @@ for line in open('C:\Users\guru316\Desktop\DSGA1004BigData\Project\CitiBike\\Cit
         else:
             value="0,1"
         str= "%s|%s\n" %(pickup_hood,value)
-        reduce_file.write(str)
+        #reduce_file.write(str)
+        print str
     except:
         print line
